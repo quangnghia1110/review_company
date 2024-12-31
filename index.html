@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm thông tin công ty</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Tìm kiếm thông tin công ty</h1>
+        
+        <!-- Thêm phần filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>Khu vực:</label>
+                <select id="regionFilter" onchange="applyFilters()">
+                    <option value="">Tất cả</option>
+                    <option value="Bắc">Bắc</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Trung">Trung</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Nhập tên công ty...">
+            <button onclick="searchCompanies()">Tìm kiếm</button>
+        </div>
+        <div id="results"></div>
+        <div class="pagination-container">
+            <div class="rows-per-page">
+                <label>Số dòng mỗi trang:</label>
+                <select id="rowsPerPage" onchange="changeRowsPerPage()">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
