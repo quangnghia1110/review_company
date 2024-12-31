@@ -131,13 +131,13 @@ function displayResults(results) {
 
     // Luôn hiển thị phân trang nếu có kết quả
     if (results.length > 0) {
-        displayPagination(totalPages, results);
+        displayPagination(totalPages);
     } else {
         document.getElementById('pagination').innerHTML = '';
     }
 }
 
-function displayPagination(totalPages, results) {
+function displayPagination(totalPages) {
     const paginationDiv = document.getElementById('pagination');
     let paginationHtml = '';
 
@@ -195,10 +195,15 @@ function displayPagination(totalPages, results) {
 }
 
 function changePage(newPage) {
-    const totalPages = Math.ceil(companiesData.length / itemsPerPage);
+    // Sử dụng currentFilteredResults thay vì companiesData
+    const results = currentFilteredResults.length > 0 ? currentFilteredResults : companiesData;
+    const totalPages = Math.ceil(results.length / itemsPerPage);
+    
     if (newPage < 1 || newPage > totalPages) return;
     currentPage = newPage;
-    displayResults(companiesData);
+    
+    // Hiển thị kết quả đã lọc
+    displayResults(results);
 }
 
 function changeRowsPerPage() {
