@@ -9,6 +9,9 @@ let currentFilters = {
     searchText: ''
 };
 
+// Thêm biến để lưu trữ kết quả đã lọc hiện tại
+let currentFilteredResults = [];
+
 // Đợi DOM load xong mới thực thi code
 document.addEventListener('DOMContentLoaded', function() {
     // Fetch data from JSON file
@@ -56,6 +59,7 @@ function displayAllCompanies() {
         advice: '',
         searchText: ''
     };
+    currentFilteredResults = [...companiesData];
     
     // Thêm kiểm tra null
     const regionFilter = document.getElementById('regionFilter');
@@ -200,12 +204,13 @@ function changePage(newPage) {
 function changeRowsPerPage() {
     const selectedValue = document.getElementById('rowsPerPage').value;
     if (selectedValue === 'all') {
-        itemsPerPage = companiesData.length; // Hiển thị tất cả
+        itemsPerPage = currentFilteredResults.length || companiesData.length;
     } else {
         itemsPerPage = parseInt(selectedValue);
     }
-    currentPage = 1; // Reset về trang đầu tiên
-    displayResults(companiesData);
+    currentPage = 1;
+    // Sử dụng kết quả đã lọc thay vì toàn bộ dữ liệu
+    displayResults(currentFilteredResults.length > 0 ? currentFilteredResults : companiesData);
 }
 
 function applyFilters() {
@@ -217,7 +222,7 @@ function applyFilters() {
     currentFilters.advice = adviceFilter ? adviceFilter.value : '';
     currentFilters.searchText = searchInput ? searchInput.value.toLowerCase() : '';
 
-    const filteredResults = companiesData.filter(company => {
+    currentFilteredResults = companiesData.filter(company => {
         const matchRegion = !currentFilters.region || 
             company.region?.toLowerCase() === currentFilters.region.toLowerCase();
         
@@ -231,5 +236,5 @@ function applyFilters() {
     });
 
     currentPage = 1;
-    displayResults(filteredResults);
+    displayResults(currentFilteredResults);
 } 
