@@ -80,6 +80,8 @@ td {
     color: #2d3436;
     font-size: 14px;
     line-height: 1.4;
+    min-height: 50px;
+    vertical-align: top;
 }
 
 th:nth-child(1), td:nth-child(1) { width: 22%; }
@@ -101,9 +103,9 @@ td, th {
 }
 
 td br {
-    margin-bottom: 4px;
     content: "";
     display: block;
+    margin: 5px 0;
 }
 
 tr:nth-child(even) {
@@ -214,4 +216,17 @@ tr:nth-child(even) {
     border-radius: 4px;
     font-size: 14px;
     min-width: 120px;
+}
+
+td.advice, td.notes {
+    color: #2c3e50;
+    font-style: italic;
+}
+
+td.advantages {
+    color: #27ae60;
+}
+
+td.disadvantages {
+    color: #c0392b;
 } 

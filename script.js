@@ -98,15 +98,26 @@ function displayResults(results) {
     `;
 
     paginatedResults.forEach(company => {
+        // Xử lý dữ liệu trước khi hiển thị
+        const processField = (field) => {
+            if (Array.isArray(field)) {
+                return field.join('<br>');
+            }
+            if (typeof field === 'string' && field.trim() !== '') {
+                return field;
+            }
+            return '';
+        };
+
         html += `
             <tr>
                 <td><strong>${company.name || ''}</strong></td>
                 <td>${company.region || ''}</td>
                 <td>${company.address || ''}</td>
-                <td class="advantages">${Array.isArray(company.advantages) ? company.advantages.join('<br>') : (company.advantages || '')}</td>
-                <td class="disadvantages">${Array.isArray(company.disadvantages) ? company.disadvantages.join('<br>') : ''}</td>
-                <td class="advice">${Array.isArray(company.advice) ? company.advice.join('<br>') : (company.advice || '')}</td>
-                <td>${Array.isArray(company.notes) ? company.notes.join('<br>') : (company.notes || '')}</td>
+                <td class="advantages">${processField(company.advantages)}</td>
+                <td class="disadvantages">${processField(company.disadvantages)}</td>
+                <td class="advice">${processField(company.advice)}</td>
+                <td class="notes">${processField(company.notes)}</td>
             </tr>
         `;
     });
@@ -198,16 +209,20 @@ function changeRowsPerPage() {
 }
 
 function applyFilters() {
-    currentFilters.region = document.getElementById('regionFilter').value;
-    currentFilters.advice = document.getElementById('adviceFilter').value;
-    currentFilters.searchText = document.getElementById('searchInput').value.toLowerCase();
+    const regionFilter = document.getElementById('regionFilter');
+    const adviceFilter = document.getElementById('adviceFilter');
+    const searchInput = document.getElementById('searchInput');
+
+    currentFilters.region = regionFilter ? regionFilter.value : '';
+    currentFilters.advice = adviceFilter ? adviceFilter.value : '';
+    currentFilters.searchText = searchInput ? searchInput.value.toLowerCase() : '';
 
     const filteredResults = companiesData.filter(company => {
         const matchRegion = !currentFilters.region || 
             company.region?.toLowerCase() === currentFilters.region.toLowerCase();
         
         const matchAdvice = !currentFilters.advice || 
-            company.advice?.toLowerCase().includes(currentFilters.advice.toLowerCase());
+            (company.advice && company.advice.toLowerCase().includes(currentFilters.advice.toLowerCase()));
         
         const matchSearch = !currentFilters.searchText || 
             company.name?.toLowerCase().includes(currentFilters.searchText);
@@ -215,6 +230,6 @@ function applyFilters() {
         return matchRegion && matchAdvice && matchSearch;
     });
 
-    currentPage = 1; // Reset về trang đầu khi lọc
+    currentPage = 1;
     displayResults(filteredResults);
 } 
