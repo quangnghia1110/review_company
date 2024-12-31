@@ -9,30 +9,40 @@ let currentFilters = {
     searchText: ''
 };
 
-// Fetch data from JSON file
-fetch('/main.json')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+// Đợi DOM load xong mới thực thi code
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch data from JSON file
+    fetch('/main.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Lọc bỏ các công ty không có tên hoặc dữ liệu rỗng
+            companiesData = data.companies.filter(company => 
+                company.name && 
+                company.name.trim() !== '' &&
+                (company.disadvantages.length > 0 || 
+                 company.advantages || 
+                 company.notes || 
+                 company.advice)
+            );
+            displayAllCompanies();
+        })
+        .catch(error => {
+            console.error('Error loading data:', error);
+            document.getElementById('results').innerHTML = '<div class="no-results">Lỗi khi tải dữ liệu</div>';
+        });
+
+    // Thêm sự kiện tìm kiếm khi nhấn Enter
+    document.getElementById('searchInput')?.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            searchCompanies();
         }
-        return response.json();
-    })
-    .then(data => {
-        // Lọc bỏ các công ty không có tên hoặc dữ liệu rỗng
-        companiesData = data.companies.filter(company => 
-            company.name && 
-            company.name.trim() !== '' &&
-            (company.disadvantages.length > 0 || 
-             company.advantages || 
-             company.notes || 
-             company.advice)
-        );
-        displayAllCompanies();
-    })
-    .catch(error => {
-        console.error('Error loading data:', error);
-        document.getElementById('results').innerHTML = '<div class="no-results">Lỗi khi tải dữ liệu</div>';
     });
+});
 
 function searchCompanies() {
     currentFilters.searchText = document.getElementById('searchInput').value.toLowerCase();
@@ -46,10 +56,16 @@ function displayAllCompanies() {
         advice: '',
         searchText: ''
     };
-    // Reset các select box về giá trị mặc định
-    document.getElementById('regionFilter').value = '';
-    document.getElementById('adviceFilter').value = '';
-    document.getElementById('searchInput').value = '';
+    
+    // Thêm kiểm tra null
+    const regionFilter = document.getElementById('regionFilter');
+    const adviceFilter = document.getElementById('adviceFilter');
+    const searchInput = document.getElementById('searchInput');
+
+    if (regionFilter) regionFilter.value = '';
+    if (adviceFilter) adviceFilter.value = '';
+    if (searchInput) searchInput.value = '';
+
     displayResults(companiesData);
 }
 
@@ -201,11 +217,4 @@ function applyFilters() {
 
     currentPage = 1; // Reset về trang đầu khi lọc
     displayResults(filteredResults);
-}
-
-// Thêm sự kiện tìm kiếm khi nhấn Enter
-document.getElementById('searchInput').addEventListener('keyup', function(event) {
-    if (event.key === 'Enter') {
-        searchCompanies();
-    }
-}); 
+} 

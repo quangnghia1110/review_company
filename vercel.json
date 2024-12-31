@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/main.json",
+      "headers": {
+        "cache-control": "s-maxage=1, stale-while-revalidate"
+      },
+      "dest": "/main.json"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+} 
